@@ -1,0 +1,1220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Media Trend Intelligence Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #3a86ff;
+            --secondary: #8338ec;
+            --success: #06d6a0;
+            --warning: #ffd166;
+            --danger: #ef476f;
+            --dark: #1a1a2e;
+            --light: #f8f9fa;
+            --gray: #6c757d;
+            --card-bg: #ffffff;
+            --border: #e0e0e0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fb;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header Styles */
+        .dashboard-header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 25px 30px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .dashboard-header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .header-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .control-group label {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .control-select {
+            padding: 10px 12px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--dark);
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .control-select:focus {
+            outline: none;
+            background: white;
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
+        }
+
+        .control-select:hover {
+            background: white;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 10px;
+        }
+
+        .action-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .action-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .action-btn.primary {
+            background: var(--success);
+        }
+
+        .action-btn.primary:hover {
+            background: #05c290;
+        }
+
+        /* Metrics Cards */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .metric-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .metric-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .metric-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--gray);
+        }
+
+        .metric-value {
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+
+        .metric-comparison {
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+        }
+
+        .positive {
+            color: var(--success);
+        }
+
+        .negative {
+            color: var(--danger);
+        }
+
+        /* Charts Section */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .chart-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .chart-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .chart-container {
+            height: 250px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Sentiment Distribution */
+        .sentiment-distribution {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .sentiment-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sentiment-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+
+        .sentiment-positive {
+            background-color: var(--success);
+        }
+
+        .sentiment-negative {
+            background-color: var(--danger);
+        }
+
+        .sentiment-neutral {
+            background-color: var(--warning);
+        }
+
+        .sentiment-label {
+            flex: 1;
+            font-size: 14px;
+        }
+
+        .sentiment-value {
+            font-weight: 600;
+        }
+
+        /* Tables Section */
+        .tables-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .table-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .table-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            padding: 12px 15px;
+            border-bottom: 2px solid var(--border);
+            font-weight: 600;
+            color: var(--gray);
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Footer */
+        .dashboard-footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--gray);
+            font-size: 14px;
+            border-top: 1px solid var(--border);
+            margin-top: 30px;
+        }
+
+        /* Gauge Chart */
+        .gauge-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+
+        .gauge {
+            width: 200px;
+            height: 100px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .gauge::before {
+            content: '';
+            position: absolute;
+            width: 200px;
+            height: 100px;
+            border: 20px solid #e0e0e0;
+            border-top: none;
+            border-radius: 100px 100px 0 0;
+            box-sizing: border-box;
+        }
+
+        .gauge-fill {
+            position: absolute;
+            width: 160px;
+            height: 80px;
+            border: 20px solid var(--primary);
+            border-top: none;
+            border-radius: 100px 100px 0 0;
+            box-sizing: border-box;
+            transform-origin: center bottom;
+            transform: rotate(0.3turn);
+            left: 0;
+            top: 0;
+        }
+
+        .gauge-value {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .charts-grid, .tables-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .chart-card, .table-card {
+                min-width: 100%;
+            }
+
+            .header-controls {
+                grid-template-columns: 1fr;
+            }
+
+            .header-actions {
+                justify-content: stretch;
+            }
+
+            .action-btn {
+                flex: 1;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Dynamic Header -->
+        <div class="dashboard-header">
+            <h1>Social Media Trend Intelligence Platform</h1>
+            <div class="header-controls">
+                <div class="control-group">
+                    <label><i class="fas fa-calendar"></i> Date Range</label>
+                    <select class="control-select" id="dateRange">
+                        <option value="7">Last 7 Days</option>
+                        <option value="30" selected>Last 30 Days</option>
+                        <option value="90">Last 90 Days</option>
+                        <option value="365">Last Year</option>
+                        <option value="custom">Custom Range</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label><i class="fas fa-share-alt"></i> Social Platforms</label>
+                    <select class="control-select" id="platforms" multiple>
+                        <option value="all" selected>All Platforms</option>
+                        <option value="twitter">Twitter</option>
+                        <option value="instagram">Instagram</option>
+                        <option value="facebook">Facebook</option>
+                        <option value="youtube">YouTube</option>
+                        <option value="tiktok">TikTok</option>
+                        <option value="linkedin">LinkedIn</option>
+                        <option value="reddit">Reddit</option>
+                        <option value="pinterest">Pinterest</option>
+                        <option value="snapchat">Snapchat</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label><i class="fas fa-tags"></i> Trend Categories</label>
+                    <select class="control-select" id="categories" multiple>
+                        <option value="all" selected>All Categories</option>
+                        <option value="technology">Technology</option>
+                        <option value="entertainment">Entertainment</option>
+                        <option value="sports">Sports</option>
+                        <option value="politics">Politics</option>
+                        <option value="business">Business</option>
+                        <option value="health">Health & Wellness</option>
+                        <option value="lifestyle">Lifestyle</option>
+                        <option value="fashion">Fashion</option>
+                        <option value="food">Food & Drink</option>
+                        <option value="travel">Travel</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label><i class="fas fa-globe"></i> Geographic Regions</label>
+                    <select class="control-select" id="regions" multiple>
+                        <option value="all" selected>All Regions</option>
+                        <option value="global">Global</option>
+                        <option value="north-america">North America</option>
+                        <option value="europe">Europe</option>
+                        <option value="asia">Asia</option>
+                        <option value="south-america">South America</option>
+                        <option value="africa">Africa</option>
+                        <option value="oceania">Oceania</option>
+                        <option value="middle-east">Middle East</option>
+                    </select>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button class="action-btn" onclick="fetchData()">
+                    <i class="fas fa-sync-alt"></i> Apply Filters
+                </button>
+                <button class="action-btn primary" onclick="fetchAllData()">
+                    <i class="fas fa-bolt"></i> Refresh All Data
+                </button>
+            </div>
+        </div>
+
+        <!-- Metrics Grid -->
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-header">
+                    <div class="metric-title">Total Trend Velocity (count/hr)</div>
+                </div>
+                <div class="metric-value" id="velocity-value">25.2K</div>
+                <div class="metric-comparison positive" id="velocity-comparison">
+                    <i class="fas fa-arrow-up"></i> vs prior period 11.6K (+117%)
+                </div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-header">
+                    <div class="metric-title">Trend Virality Score (%)</div>
+                </div>
+                <div class="metric-value" id="virality-value">68.5</div>
+                <div class="metric-comparison positive" id="virality-comparison">
+                    <i class="fas fa-arrow-up"></i> vs prior period 42.3 (+62%)
+                </div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-header">
+                    <div class="metric-title">Sentiment Ratio (+/-/Neutral)</div>
+                </div>
+                <div class="metric-value" id="sentiment-value">62/28/10</div>
+                <div class="metric-comparison positive" id="sentiment-comparison">
+                    <i class="fas fa-arrow-up"></i> vs prior period 55/30/15 (+7%)
+                </div>
+            </div>
+            
+            <div class="metric-card">
+                <div class="metric-header">
+                    <div class="metric-title">Emerging Topics (count)</div>
+                </div>
+                <div class="metric-value" id="emerging-value">42</div>
+                <div class="metric-comparison positive" id="emerging-comparison">
+                    <i class="fas fa-arrow-up"></i> vs prior period 28 (+59%)
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="charts-grid">
+            <!-- Platform Trend Velocity -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div class="chart-title">Platform Trend Velocity</div>
+                </div>
+                <div class="chart-container" id="platform-chart">
+                    <!-- Chart will be dynamically generated -->
+                </div>
+            </div>
+
+            <!-- Trend Sentiment Distribution -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div class="chart-title">Trend Sentiment Distribution</div>
+                </div>
+                <div class="chart-container">
+                    <div class="sentiment-distribution" id="sentiment-chart">
+                        <!-- Dynamic content -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trend Category Distribution -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div class="chart-title">Trend Category Distribution</div>
+                </div>
+                <div class="chart-container" id="category-chart">
+                    <!-- Chart will be dynamically generated -->
+                </div>
+            </div>
+
+            <!-- Virality Potential Gauge -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div class="chart-title">Virality Potential Gauge</div>
+                </div>
+                <div class="chart-container">
+                    <div class="gauge-container">
+                        <div class="gauge">
+                            <div class="gauge-fill" id="gauge-fill"></div>
+                        </div>
+                        <div class="gauge-value" id="gauge-value">68.5%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tables Grid -->
+        <div class="tables-grid">
+            <!-- Top Trending Content -->
+            <div class="table-card">
+                <div class="table-header">
+                    <div class="table-title">Top Trending Content</div>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Content</th>
+                            <th>Engagement</th>
+                            <th>Virality</th>
+                            <th>Growth</th>
+                        </tr>
+                    </thead>
+                    <tbody id="trending-content">
+                        <!-- Dynamic content -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- AI Trend Insights -->
+            <div class="table-card">
+                <div class="table-header">
+                    <div class="table-title">AI Trend Insights</div>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Trend</th>
+                            <th>Insight</th>
+                            <th>Impact</th>
+                            <th>Confidence</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ai-insights">
+                        <!-- Dynamic content -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="dashboard-footer">
+            <p>Social Media Trend Intelligence Platform | Data Last Updated: <span id="current-date"></span></p>
+            <p>Active Filters: <span id="active-filters">All Platforms, All Categories, All Regions, Last 30 Days</span></p>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" style="
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.9);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        flex-direction: column;
+        gap: 20px;
+    ">
+        <div style="
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        "></div>
+        <p style="color: var(--dark); font-weight: 500;" id="loading-text">Fetching social media trends...</p>
+    </div>
+
+    <script>
+        // Configuration
+        const PLATFORM_APIS = {
+            twitter: 'https://api.twitter.com/2/tweets/search/recent',
+            reddit: 'https://www.reddit.com/r/popular.json',
+            youtube: 'https://www.googleapis.com/youtube/v3/videos',
+            github: 'https://api.github.com/search/repositories',
+            news: 'https://newsapi.org/v2/top-headlines'
+        };
+
+        let currentFilters = {
+            dateRange: '30',
+            platforms: ['all'],
+            categories: ['all'],
+            regions: ['all']
+        };
+
+        // Initialize the dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeFilters();
+            updateActiveFilters();
+            fetchAllData();
+            
+            // Set up filter change listeners
+            document.getElementById('dateRange').addEventListener('change', updateFilters);
+            document.getElementById('platforms').addEventListener('change', updateFilters);
+            document.getElementById('categories').addEventListener('change', updateFilters);
+            document.getElementById('regions').addEventListener('change', updateFilters);
+            
+            // Auto-refresh every 5 minutes
+            setInterval(fetchAllData, 300000);
+        });
+
+        // Initialize filter controls
+        function initializeFilters() {
+            // Set multiple selection behavior
+            const multiSelects = document.querySelectorAll('select[multiple]');
+            multiSelects.forEach(select => {
+                select.addEventListener('mousedown', function(e) {
+                    e.preventDefault();
+                    const option = e.target;
+                    if (option.tagName === 'OPTION') {
+                        option.selected = !option.selected;
+                        updateFilters();
+                    }
+                });
+            });
+        }
+
+        // Update current filters
+        function updateFilters() {
+            currentFilters = {
+                dateRange: document.getElementById('dateRange').value,
+                platforms: Array.from(document.getElementById('platforms').selectedOptions).map(opt => opt.value),
+                categories: Array.from(document.getElementById('categories').selectedOptions).map(opt => opt.value),
+                regions: Array.from(document.getElementById('regions').selectedOptions).map(opt => opt.value)
+            };
+            
+            updateActiveFilters();
+        }
+
+        // Update active filters display
+        function updateActiveFilters() {
+            const filters = [];
+            
+            // Date range
+            const dateText = {
+                '7': 'Last 7 Days',
+                '30': 'Last 30 Days',
+                '90': 'Last 90 Days',
+                '365': 'Last Year',
+                'custom': 'Custom Range'
+            };
+            filters.push(dateText[currentFilters.dateRange]);
+            
+            // Platforms
+            if (currentFilters.platforms.includes('all')) {
+                filters.push('All Platforms');
+            } else {
+                filters.push(`${currentFilters.platforms.length} Platforms`);
+            }
+            
+            // Categories
+            if (currentFilters.categories.includes('all')) {
+                filters.push('All Categories');
+            } else {
+                filters.push(`${currentFilters.categories.length} Categories`);
+            }
+            
+            // Regions
+            if (currentFilters.regions.includes('all')) {
+                filters.push('All Regions');
+            } else {
+                filters.push(`${currentFilters.regions.length} Regions`);
+            }
+            
+            document.getElementById('active-filters').textContent = filters.join(', ');
+        }
+
+        // Show loading overlay
+        function showLoading(message = 'Fetching social media trends...') {
+            document.getElementById('loading-text').textContent = message;
+            document.getElementById('loading-overlay').style.display = 'flex';
+        }
+
+        // Hide loading overlay
+        function hideLoading() {
+            document.getElementById('loading-overlay').style.display = 'none';
+        }
+
+        // Fetch data based on current filters
+        async function fetchData() {
+            showLoading(`Fetching trends for ${getPlatformNames()}...`);
+            
+            try {
+                // Simulate API calls based on selected platforms
+                const platformData = await fetchPlatformData();
+                const processedData = processPlatformData(platformData);
+                
+                updateDashboard(processedData);
+                showNotification(`✅ Data updated for ${getPlatformNames()}`);
+                
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                useFallbackData();
+                showNotification('⚠️ Using demo data (API unavailable)');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // Fetch all available data
+        async function fetchAllData() {
+            showLoading('Fetching all social media trends...');
+            
+            try {
+                // Reset to all platforms for complete data
+                currentFilters.platforms = ['all'];
+                updateFilterSelections();
+                
+                const allData = await fetchAllPlatformsData();
+                const processedData = processAllData(allData);
+                
+                updateDashboard(processedData);
+                showNotification('✅ All platform data updated');
+                
+            } catch (error) {
+                console.error('Error fetching all data:', error);
+                useFallbackData();
+                showNotification('⚠️ Using demo data (API unavailable)');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // Get platform names for display
+        function getPlatformNames() {
+            if (currentFilters.platforms.includes('all')) {
+                return 'All Platforms';
+            }
+            return currentFilters.platforms.map(platform => 
+                platform.charAt(0).toUpperCase() + platform.slice(1)
+            ).join(', ');
+        }
+
+        // Simulate platform data fetching
+        async function fetchPlatformData() {
+            // Simulate API delay
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            const platforms = currentFilters.platforms.includes('all') 
+                ? ['twitter', 'instagram', 'facebook', 'youtube', 'tiktok', 'reddit']
+                : currentFilters.platforms.filter(p => p !== 'all');
+            
+            const data = {};
+            
+            for (const platform of platforms) {
+                data[platform] = await generatePlatformData(platform);
+            }
+            
+            return data;
+        }
+
+        // Generate realistic platform data
+        async function generatePlatformData(platform) {
+            const platformStats = {
+                twitter: { baseEngagement: 5000, variance: 3000 },
+                instagram: { baseEngagement: 8000, variance: 5000 },
+                facebook: { baseEngagement: 3000, variance: 2000 },
+                youtube: { baseEngagement: 10000, variance: 8000 },
+                tiktok: { baseEngagement: 15000, variance: 10000 },
+                reddit: { baseEngagement: 2000, variance: 1500 },
+                linkedin: { baseEngagement: 1000, variance: 800 },
+                pinterest: { baseEngagement: 2500, variance: 1500 },
+                snapchat: { baseEngagement: 7000, variance: 4000 }
+            };
+            
+            const stats = platformStats[platform] || { baseEngagement: 5000, variance: 3000 };
+            const engagement = stats.baseEngagement + Math.random() * stats.variance;
+            
+            return {
+                engagement: Math.round(engagement),
+                virality: Math.round(40 + Math.random() * 40),
+                sentiment: {
+                    positive: Math.round(50 + Math.random() * 30),
+                    negative: Math.round(10 + Math.random() * 20),
+                    neutral: Math.round(10 + Math.random() * 20)
+                },
+                trends: generateTrendsForPlatform(platform)
+            };
+        }
+
+        // Generate trends for specific platform
+        function generateTrendsForPlatform(platform) {
+            const trendTemplates = {
+                twitter: ['Twitter Trend', 'Viral Tweet', 'Hashtag Campaign'],
+                instagram: ['Instagram Reel', 'Story Trend', 'Influencer Post'],
+                youtube: ['YouTube Short', 'Viral Video', 'Creator Content'],
+                tiktok: ['TikTok Challenge', 'Dance Trend', 'Sound Trend'],
+                reddit: ['Reddit Thread', 'AMA Session', 'Subreddit Trend'],
+                facebook: ['Facebook Post', 'Group Discussion', 'Event Trend']
+            };
+            
+            const templates = trendTemplates[platform] || ['Social Trend', 'Viral Content'];
+            const trends = [];
+            
+            for (let i = 0; i < 5; i++) {
+                trends.push({
+                    title: `${templates[Math.floor(Math.random() * templates.length)]} ${i + 1}`,
+                    engagement: Math.round(1000 + Math.random() * 10000),
+                    growth: Math.round(10 + Math.random() * 40)
+                });
+            }
+            
+            return trends;
+        }
+
+        // Process platform data for dashboard
+        function processPlatformData(platformData) {
+            let totalEngagement = 0;
+            let totalVirality = 0;
+            let totalTrends = 0;
+            let platformMetrics = [];
+            let allTrends = [];
+            let sentimentData = { positive: 0, negative: 0, neutral: 0 };
+            
+            for (const [platform, data] of Object.entries(platformData)) {
+                totalEngagement += data.engagement;
+                totalVirality += data.virality;
+                totalTrends += data.trends.length;
+                
+                platformMetrics.push({
+                    platform: platform,
+                    engagement: data.engagement,
+                    virality: data.virality
+                });
+                
+                allTrends = allTrends.concat(data.trends.map(trend => ({
+                    ...trend,
+                    platform: platform
+                })));
+                
+                sentimentData.positive += data.sentiment.positive;
+                sentimentData.negative += data.sentiment.negative;
+                sentimentData.neutral += data.sentiment.neutral;
+            }
+            
+            const platformCount = Object.keys(platformData).length;
+            
+            return {
+                totalVelocity: totalEngagement,
+                avgVirality: totalVirality / platformCount,
+                emergingTopics: Math.floor(totalTrends * 0.3),
+                sentimentRatio: {
+                    positive: Math.round(sentimentData.positive / platformCount),
+                    negative: Math.round(sentimentData.negative / platformCount),
+                    neutral: Math.round(sentimentData.neutral / platformCount)
+                },
+                platformMetrics: platformMetrics,
+                trends: allTrends.sort((a, b) => b.engagement - a.engagement)
+            };
+        }
+
+        // Update dashboard with processed data
+        function updateDashboard(data) {
+            // Update metrics
+            document.getElementById('velocity-value').textContent = formatNumber(data.totalVelocity);
+            document.getElementById('virality-value').textContent = data.avgVirality.toFixed(1);
+            document.getElementById('sentiment-value').textContent = 
+                `${data.sentimentRatio.positive}/${data.sentimentRatio.negative}/${data.sentimentRatio.neutral}`;
+            document.getElementById('emerging-value').textContent = data.emergingTopics;
+            
+            // Update gauge
+            updateGauge(data.avgVirality);
+            
+            // Update charts
+            updatePlatformChart(data.platformMetrics);
+            updateSentimentChart(data.sentimentRatio);
+            updateCategoryChart(data.trends);
+            
+            // Update tables
+            updateTrendingTable(data.trends);
+            updateAIInsightsTable(data.trends);
+            
+            // Update timestamp
+            document.getElementById('current-date').textContent = new Date().toLocaleString();
+        }
+
+        // Update gauge visualization
+        function updateGauge(virality) {
+            const gaugeFill = document.getElementById('gauge-fill');
+            const gaugeValue = document.getElementById('gauge-value');
+            
+            const percentage = virality / 100;
+            gaugeFill.style.transform = `rotate(${0.5 * percentage}turn)`;
+            gaugeValue.textContent = `${virality.toFixed(1)}%`;
+        }
+
+        // Update platform chart
+        function updatePlatformChart(platformMetrics) {
+            const container = document.getElementById('platform-chart');
+            container.innerHTML = '';
+            
+            const chart = document.createElement('div');
+            chart.style.cssText = `
+                width: 100%; 
+                height: 100%; 
+                background: #f8f9fa; 
+                border-radius: 8px; 
+                display: flex; 
+                align-items: flex-end; 
+                padding: 20px;
+                gap: 10px;
+            `;
+            
+            platformMetrics.forEach(metric => {
+                const height = (metric.engagement / 20000) * 100;
+                const bar = document.createElement('div');
+                bar.style.cssText = `
+                    flex: 1;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: flex-end;
+                    height: 100%;
+                `;
+                
+                bar.innerHTML = `
+                    <div style="
+                        width: 30px; 
+                        background: var(--primary); 
+                        height: ${Math.max(10, height)}%; 
+                        border-radius: 4px 4px 0 0;
+                        transition: height 1s ease;
+                    "></div>
+                    <span style="margin-top: 10px; font-size: 12px; font-weight: 500;">
+                        ${metric.platform.charAt(0).toUpperCase() + metric.platform.slice(1)}
+                    </span>
+                `;
+                
+                chart.appendChild(bar);
+            });
+            
+            container.appendChild(chart);
+        }
+
+        // Update sentiment chart
+        function updateSentimentChart(sentimentData) {
+            const container = document.getElementById('sentiment-chart');
+            container.innerHTML = '';
+            
+            const sentiments = [
+                { label: 'Positive', value: sentimentData.positive, color: 'var(--success)' },
+                { label: 'Negative', value: sentimentData.negative, color: 'var(--danger)' },
+                { label: 'Neutral', value: sentimentData.neutral, color: 'var(--warning)' }
+            ];
+            
+            sentiments.forEach(sentiment => {
+                const item = document.createElement('div');
+                item.className = 'sentiment-item';
+                item.innerHTML = `
+                    <div class="sentiment-color" style="background-color: ${sentiment.color};"></div>
+                    <div class="sentiment-label">${sentiment.label}</div>
+                    <div class="sentiment-value">${sentiment.value}%</div>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        // Update category chart
+        function updateCategoryChart(trends) {
+            const container = document.getElementById('category-chart');
+            container.innerHTML = '';
+            
+            // Simple bar chart representation
+            const chart = document.createElement('div');
+            chart.style.cssText = `
+                width: 100%; 
+                height: 100%; 
+                background: #f8f9fa; 
+                border-radius: 8px; 
+                display: flex; 
+                align-items: flex-end; 
+                padding: 20px;
+                gap: 10px;
+            `;
+            
+            // Group by platform for demonstration
+            const platforms = [...new Set(trends.map(t => t.platform))];
+            
+            platforms.forEach(platform => {
+                const platformTrends = trends.filter(t => t.platform === platform);
+                const avgEngagement = platformTrends.reduce((sum, t) => sum + t.engagement, 0) / platformTrends.length;
+                const height = (avgEngagement / 10000) * 100;
+                
+                const bar = document.createElement('div');
+                bar.style.cssText = `
+                    flex: 1;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: flex-end;
+                    height: 100%;
+                `;
+                
+                bar.innerHTML = `
+                    <div style="
+                        width: 30px; 
+                        background: var(--secondary); 
+                        height: ${Math.max(10, height)}%; 
+                        border-radius: 4px 4px 0 0;
+                        transition: height 1s ease;
+                    "></div>
+                    <span style="margin-top: 10px; font-size: 12px; font-weight: 500;">
+                        ${platform.charAt(0).toUpperCase() + platform.slice(1)}
+                    </span>
+                `;
+                
+                chart.appendChild(bar);
+            });
+            
+            container.appendChild(chart);
+        }
+
+        // Update trending content table
+        function updateTrendingTable(trends) {
+            const container = document.getElementById('trending-content');
+            container.innerHTML = '';
+            
+            trends.slice(0, 6).forEach(trend => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>
+                        <div style="font-weight: 500;">${trend.title}</div>
+                        <div style="font-size: 12px; color: var(--gray);">${trend.platform}</div>
+                    </td>
+                    <td>${formatNumber(trend.engagement)}</td>
+                    <td>${Math.round(40 + Math.random() * 40)}%</td>
+                    <td class="positive">+${trend.growth}%</td>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        // Update AI insights table
+        function updateAIInsightsTable(trends) {
+            const container = document.getElementById('ai-insights');
+            container.innerHTML = '';
+            
+            const insights = [
+                "Rapid audience growth detected in current trends",
+                "High potential for viral marketing campaigns",
+                "Positive sentiment indicates strong brand alignment opportunities",
+                "Emerging topics show potential for early adoption advantages",
+                "Cross-platform engagement suggests multi-channel strategy benefits",
+                "Seasonal patterns indicate optimal timing for campaign launches"
+            ];
+            
+            trends.slice(0, 4).forEach((trend, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${trend.title}</td>
+                    <td>${insights[index] || insights[0]}</td>
+                    <td>${['Low', 'Medium', 'High'][index % 3]}</td>
+                    <td>${75 + (index * 5)}%</td>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        // Fallback data
+        function useFallbackData() {
+            const fallbackData = {
+                totalVelocity: 25000 + Math.random() * 10000,
+                avgVirality: 60 + Math.random() * 20,
+                emergingTopics: 30 + Math.floor(Math.random() * 20),
+                sentimentRatio: {
+                    positive: 60 + Math.floor(Math.random() * 20),
+                    negative: 15 + Math.floor(Math.random() * 15),
+                    neutral: 20 + Math.floor(Math.random() * 10)
+                },
+                platformMetrics: [
+                    { platform: 'twitter', engagement: 8000, virality: 65 },
+                    { platform: 'instagram', engagement: 12000, virality: 75 },
+                    { platform: 'youtube', engagement: 15000, virality: 70 },
+                    { platform: 'tiktok', engagement: 18000, virality: 80 }
+                ],
+                trends: [
+                    { title: 'Viral Challenge', engagement: 15000, growth: 45, platform: 'tiktok' },
+                    { title: 'Tech Innovation', engagement: 12000, growth: 38, platform: 'twitter' },
+                    { title: 'Influencer Campaign', engagement: 9000, growth: 32, platform: 'instagram' },
+                    { title: 'Educational Content', engagement: 8000, growth: 28, platform: 'youtube' }
+                ]
+            };
+            
+            updateDashboard(fallbackData);
+        }
+
+        // Utility functions
+        function formatNumber(num) {
+            if (num >= 1000000) {
+                return (num / 1000000).toFixed(1) + 'M';
+            } else if (num >= 1000) {
+                return (num / 1000).toFixed(1) + 'K';
+            }
+            return Math.round(num).toString();
+        }
+
+        function showNotification(message) {
+            // Remove existing notification
+            const existing = document.querySelector('.notification');
+            if (existing) existing.remove();
+            
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: var(--success);
+                color: white;
+                padding: 12px 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                z-index: 1001;
+                font-weight: 500;
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Stub functions for completeness
+        async function fetchAllPlatformsData() {
+            return await fetchPlatformData();
+        }
+
+        function processAllData(data) {
+            return processPlatformData(data);
+        }
+
+        function updateFilterSelections() {
+            // In a real app, this would update the DOM to reflect currentFilters
+        }
+
+        // Add CSS for animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+            
+            select[multiple] option:checked {
+                background: var(--primary) linear-gradient(0deg, var(--primary) 0%, var(--primary) 100%);
+                color: white;
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
